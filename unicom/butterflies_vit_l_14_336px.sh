@@ -1,6 +1,6 @@
 CUDA_VISIBLE_DEVICES=0 torchrun --nproc_per_node 1 --master_port 12345 \
 retrieval.py \
-            --batch_size           16 \
+            --batch_size           2 \
             --dataset              butterflies \
             --debug                0 \
             --epochs               64 \
@@ -18,9 +18,11 @@ retrieval.py \
             --num_feat             512 \
             --optimizer            adamw \
             --output_dim           768 \
-            --output               /tmp/tmp_for_training \
+            --output               checkpoints/butterflies_220k/ \
             --resume               NULL \
             --sample_rate          1.0 \
             --seed                 1024 \
             --transform            origin_clip \
-            --weight_decay         0 2>&1 | tee l14_336px_butterflies.log
+            --weight_decay         0 2>&1 \
+            --root                 /blue/arthur.porto-biocosmos/data/datasets/nymphalidae_whole_specimen-v240606/ \
+            --class_file           /blue/arthur.porto-biocosmos/mlurig/projects/2024_nymphalidae/data/clusters_assignments_mod.csv >> l14_336px_butterflies.log

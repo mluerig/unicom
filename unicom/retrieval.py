@@ -51,6 +51,8 @@ parser.add_argument("--aa", type=str, default='rand-m9-mstd0.5-inc1', help="The 
 parser.add_argument("--reprob", type=float, default=0.25, help="The probability of replacing pixels during training using CutOut.")
 parser.add_argument("--remode", type=str, default="pixel", help="The mode of replacement to use during training when using CutOut.")
 parser.add_argument("--recount", type=int, default=1, help="")
+parser.add_argument("--root", type=str, help="root directory of the dataset")
+parser.add_argument("--class_file", type=str, help="path to csv with class assignments (class) and relative paths (rel_paths)")
 
 
 args = parser.parse_args()
@@ -64,7 +66,8 @@ torch.cuda.set_device(local_rank)
 def get_dataset(dataset_name: str, transform: Callable, transform_train=None) -> Dict:
     if transform_train is None:
         transform_train = transform     
-    root = "data"
+    root = args.root 
+    class_file = args.class_file 
 
     if dataset_name == "sop":
         from dataset import SOP
@@ -105,15 +108,15 @@ def get_dataset(dataset_name: str, transform: Callable, transform_train=None) ->
     elif dataset_name == "butterflies":
         from dataset import butterflies
         trainset = butterflies.ButterfliesDataset(
-            root=r"/home/mlurig/Dropbox/projects/2024_nymphalidae/data_raw/segmentation_masks_clean/nymphalidae_whole_specimen-v240606/", 
+            root=root, 
             mode="train", 
-            class_file=r"/home/mlurig/Dropbox/projects/2024_nymphalidae/data/clusters_assignments_mod.csv",
+            class_file=class_file,
             transform=transform_train,
             )
         testset = butterflies.ButterfliesDataset(
-            root=r"/home/mlurig/Dropbox/projects/2024_nymphalidae/data_raw/segmentation_masks_clean/nymphalidae_whole_specimen-v240606/", 
+            root=root, 
             mode="eval", 
-            class_file=r"/home/mlurig/Dropbox/projects/2024_nymphalidae/data/clusters_assignments_mod.csv",
+            class_file=class_file,
             transform=transform,
             )
         trainset.num_classes = trainset.nb_classes()
