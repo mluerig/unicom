@@ -63,7 +63,7 @@ torch.cuda.set_device(local_rank)
 
 def get_dataset(dataset_name: str, transform: Callable, transform_train=None) -> Dict:
     if transform_train is None:
-        transform_train = transform
+        transform_train = transform     
     root = "data"
 
     if dataset_name == "sop":
@@ -94,12 +94,31 @@ def get_dataset(dataset_name: str, transform: Callable, transform_train=None) ->
         gallery = Inshop_Dataset(root, "gallery", transform)
         trainset.num_classes = trainset.nb_classes()
         return {"train": trainset, "query": query, "gallery": gallery, "metric": "rank1"}
+    
     elif dataset_name == "inat":
         from dataset import inaturalist
         trainset = inaturalist.get_trainset(root, transform_train)
         testset = inaturalist.get_testset(root, transform)
         trainset.num_classes = 5690
         return {"train": trainset, "test": testset, "metric": "rank1"}
+    
+    elif dataset_name == "butterflies":
+        from dataset import butterflies
+        trainset = butterflies.ButterfliesDataset(
+            root=r"/home/mlurig/Dropbox/projects/2024_nymphalidae/data_raw/segmentation_masks_clean/nymphalidae_whole_specimen-v240606/", 
+            mode="train", 
+            class_file=r"/home/mlurig/Dropbox/projects/2024_nymphalidae/data/clusters_assignments_mod.csv",
+            transform=transform_train,
+            )
+        testset = butterflies.ButterfliesDataset(
+            root=r"/home/mlurig/Dropbox/projects/2024_nymphalidae/data_raw/segmentation_masks_clean/nymphalidae_whole_specimen-v240606/", 
+            mode="eval", 
+            class_file=r"/home/mlurig/Dropbox/projects/2024_nymphalidae/data/clusters_assignments_mod.csv",
+            transform=transform,
+            )
+        trainset.num_classes = trainset.nb_classes()
+        return {"train": trainset, "test": testset, "metric": "rank1"}
+    
     else:
         raise
 
