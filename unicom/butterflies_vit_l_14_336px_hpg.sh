@@ -1,0 +1,28 @@
+CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node 4 --master_port 12345 \
+retrieval.py \
+            --batch_size           100 \
+            --dataset              butterflies \
+            --debug                0 \
+            --epochs               64 \
+            --lr                   1e-05 \
+            --lr_pfc_weight        10.0 \
+            --input_size           336 \
+            --gradient_acc         1 \
+            --model_name           ViT-L/14@336px \
+            --margin_loss_m1       1.0 \
+            --margin_loss_m2       0.25 \
+            --margin_loss_m3       0.0 \
+            --margin_loss_s        32.0 \
+            --margin_loss_filter   0.0 \
+            --num_workers          4 \
+            --num_feat             512 \
+            --optimizer            adamw \
+            --output_dim           768 \
+            --output               checkpoints/butterflies_220k/ \
+            --resume               NULL \
+            --sample_rate          1.0 \
+            --seed                 1024 \
+            --transform            origin_clip \
+            --weight_decay         0 2>&1 \
+            --root                 /blue/arthur.porto-biocosmos/data/datasets/nymphalidae_whole_specimen-v240606/ \
+            --class_file           /blue/arthur.porto-biocosmos/mlurig/projects/2024_nymphalidae/data/clusters_assignments_mod.csv  >> l14_336px_butterflies.log
