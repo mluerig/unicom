@@ -8,10 +8,12 @@ Created on Tue Mar 18 17:24:49 2025
 
 import os
 import pandas as pd
+import random
+
 from .base import BaseDataset
 
 class ButterfliesDataset(BaseDataset):
-    def __init__(self, root, mode, class_file, transform=None, train_ratio=0.8):
+    def __init__(self, root, mode, class_file, transform=None, train_ratio=0.8, seed=42):
         # Initialize the base dataset first
         BaseDataset.__init__(self, root, mode, transform)
         
@@ -21,6 +23,8 @@ class ButterfliesDataset(BaseDataset):
         
         # Convert unique class values to int and sort them
         all_classes = sorted({int(str(c).strip()) for c in class_df["class"].unique()})
+        random.seed(seed)
+        random.shuffle(all_classes)
         num_classes = len(all_classes)
         split_index = int(num_classes * train_ratio)
         
