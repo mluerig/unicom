@@ -176,6 +176,10 @@ def build_model(name="ViT-L/14@336px"):
         model = VisionTransformer(
             input_size=336, patch_size=14, in_channels=3, dim=1024, embedding_size=768,
             depth=24, num_heads=16, drop_path_rate=0.1, using_checkpoint=False)
+    elif name == "ViT-L/14@336px_clip":
+        model = VisionTransformer(
+            input_size=336, patch_size=14, in_channels=3, dim=1024, embedding_size=768,
+            depth=24, num_heads=16, drop_path_rate=0.1, using_checkpoint=False)
     return model
 
 
@@ -202,6 +206,8 @@ def load_model_and_transform(name="ViT-L/14@336px"):
     elif name == "ViT-L/14":
         return build_model(name), _transform(224)
     elif name == "ViT-L/14@336px":
+        return build_model(name), _transform(336)
+    elif name == "ViT-L/14@336px_clip":
         return build_model(name), _transform(336)
     else:
         raise
