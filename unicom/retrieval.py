@@ -17,7 +17,8 @@ from torch.utils.data import Subset
 from torchvision import transforms
 
 import unicom
-from partial_fc import CombinedMarginLoss, PartialFC_V2
+
+from .partial_fc import CombinedMarginLoss, PartialFC_V2
 
 parser = argparse.ArgumentParser(
     description="retrieval is a command-line tool that provides functionality for fine-tuning the Unicom model on retrieval tasks. With this tool, you can easily adjust the unicom model to achieve optimal performance on a variety of image retrieval tasks. Simply specify the task-specific parameters and let the tool handle the rest.")
@@ -766,6 +767,55 @@ def mean_average_precision(predictions, retrieval_solution, max_predictions=100)
     mean_ap /= num_test_images
 
     return mean_ap
+
+
+@torch.no_grad()
+def evaluation_from_checkpoint(model,
+                               dataset_dict,
+                               batch_size,
+                               num_workers):
+    """
+    Evaluate the model using a specified checkpoint.
+
+    Args:
+        model (torch.nn.Module): The model to evaluate.
+        dataset_dict (Dict): Dictionary containing datasets for evaluation.
+        batch_size (int): Batch size for evaluation.
+        num_workers (int): Number of workers for data loading.
+
+    Returns:
+        Metric(s) based on the dataset type.
+    """
+
+    if "index" in dataset_dict:
+        val, val_label = extract_feat(
+            model, dataset_dict["val"], batch_size, num_workers)
+        test, test_label = extract_feat(
+            model, dataset_dict["test"], batch_size, num_workers)
+        index, index_label = extract_feat(
+            model, dataset_dict["index"], batch_size, num_workers)
+        metric_val = get_metric_google_landmark(
+            val, val_label, index, index_label)
+        metric_test = get_metric_google_landmark(
+            test, test_label, index, index_label)
+        return metric_test, metric_val
+
+    elif "test" in dataset_dict:
+        dataset = dataset_dict["test"]
+        x, y = extract_feat(model, dataset, batch_size, num_workers)
+        metric = get_metric(x, y)
+        return metric
+
+    elif "query" in dataset_dict and "gallery" in dataset_dict:
+        dataset_q = dataset_dict["query"]
+        dataset_g = dataset_dict["gallery"]
+        q, q_label = extract_feat(model, dataset_q, batch_size, num_workers)
+        g, g_label = extract_feat(model, dataset_g, batch_size, num_workers)
+        metric = get_metric(query=q, query_label=q_label,
+                            gallery=g, gallery_label=g_label)
+        return metric
+    
+    
 
 
 if __name__ == "__main__":

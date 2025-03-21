@@ -4,3 +4,4 @@ from .SOP import SOP
 from .Inshop import Inshop_Dataset
 from .base import BaseDataset
 from .inaturalist import INaturalistDataset
+from .butterflies import ButterfliesDataset
