@@ -3,7 +3,7 @@ retrieval.py \
             --batch_size           100 \
             --dataset              butterflies \
             --debug                0 \
-            --epochs               64 \
+            --epochs               20 \
             --lr                   1e-05 \
             --lr_pfc_weight        10.0 \
             --input_size           336 \
@@ -18,11 +18,11 @@ retrieval.py \
             --num_feat             512 \
             --optimizer            adamw \
             --output_dim           768 \
-            --output               checkpoints/butterflies_220k/ \
+            --output               checkpoints/butterflies_220k_shuff_species/ \
             --resume               NULL \
             --sample_rate          1.0 \
             --seed                 1024 \
             --transform            origin_clip \
             --weight_decay         0 2>&1 \
             --root                 /blue/arthur.porto-biocosmos/data/datasets/nymphalidae_whole_specimen-v240606/ \
-            --class_file           /blue/arthur.porto-biocosmos/mlurig/projects/2024_nymphalidae/data/clusters_assignments_mod.csv  >> l14_336px_butterflies.log
+            --class_file           /blue/arthur.porto-biocosmos/mlurig/projects/2024_nymphalidae/data/clusters_assignments_mod2.csv  >> l14_336px_butterflies_species.log
